@@ -33,6 +33,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import UserButtonMenu from "../user-button-menu/component.jsx";
+import SettingsDropdownContainer from "/imports/ui/components/nav-bar/settings-dropdown/container";
+import Meetings from "/imports/api/meetings";
 
 const MOBILE_MEDIA = "only screen and (max-width: 40em)";
 const APP_CONFIG = Meteor.settings.public.app;
@@ -148,7 +150,11 @@ const useStyles = (theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    flexGrow: 0,
+    flexGrow: 1,
+  },
+  meetingtitle: {
+    alignItem: "center",
+    flexGrow: 1,
   },
   tabs: {
     flexGrow: 1,
@@ -353,7 +359,6 @@ class App extends Component {
     const { actionsbar, intl } = this.props;
 
     if (!actionsbar) return null;
-
     return (
       <section
         className={styles.actionsbar}
@@ -391,6 +396,14 @@ class App extends Component {
   }
 
   renderTopNavBar() {
+    const meetingId = this.props.User.meetingId;
+    const meetingObject = Meetings.findOne(
+      {
+        meetingId,
+      },
+      { fields: { "meetingProp.name": 1, "breakoutProps.sequence": 1 } }
+    );
+    console.log(this.props);
     const { classes } = this.props;
     const value = -1;
     const setValue = (value) => {
@@ -414,10 +427,13 @@ class App extends Component {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" className={classes.title}>
+            <Typography variant="h7" className={classes.title}>
               BigBlueButton
             </Typography>
-            <Tabs
+            <Typography variant="h6" className={classes.meetingtitle}>
+              {meetingObject.meetingProp.name}
+            </Typography>
+            {/* <Tabs
               value={value}
               onChange={handleChange}
               className={classes.tabs}
@@ -426,12 +442,16 @@ class App extends Component {
               <Tab label="Tab One" {...a11yProps(0)} />
               <Tab label="Tab Two" {...a11yProps(1)} />
               <Tab label="Tab Three" {...a11yProps(2)} />
-            </Tabs>
+            </Tabs> */}
             {/* {this.renderUserButton()} */}
-            <UserButtonMenu props={this.props} />
+            {/* <UserButtonMenu props={this.props} /> */}
+            <SettingsDropdownContainer
+              amIModerator={this.props.amIModerator}
+              userName={this.props.userName}
+            />
           </Toolbar>
         </AppBar>
-        <TabPanel value={value} index={0}>
+        {/* <TabPanel value={value} index={0}>
           Item One
         </TabPanel>
         <TabPanel value={value} index={1}>
@@ -439,7 +459,7 @@ class App extends Component {
         </TabPanel>
         <TabPanel value={value} index={2}>
           Item Three
-        </TabPanel>
+        </TabPanel> */}
       </div>
     );
   }
@@ -455,7 +475,7 @@ class App extends Component {
         <NotificationsBarContainer />
         <section className={styles.wrapper}>
           <div className={openPanel ? styles.content : styles.noPanelContent}>
-            {this.renderNavBar()}
+            {/* {this.renderNavBar()} */}
             {this.renderMedia()}
             {this.renderActionsBar()}
           </div>

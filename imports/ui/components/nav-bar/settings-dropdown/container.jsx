@@ -1,23 +1,23 @@
-import React from 'react';
-import { withTracker } from 'meteor/react-meteor-data';
-import browser from 'browser-detect';
-import SettingsDropdown from './component';
-import FullscreenService from '../../fullscreen-button/service';
-import { meetingIsBreakout } from '/imports/ui/components/app/service';
+import React from "react";
+import { withTracker } from "meteor/react-meteor-data";
+import browser from "browser-detect";
+import SettingsDropdown from "./component";
+import FullscreenService from "../../fullscreen-button/service";
+import { meetingIsBreakout } from "/imports/ui/components/app/service";
 
 const BROWSER_RESULTS = browser();
-const isSafari = BROWSER_RESULTS.name === 'safari';
+const isSafari = BROWSER_RESULTS.name === "safari";
 const isIphone = navigator.userAgent.match(/iPhone/i);
-const noIOSFullscreen = (isSafari && BROWSER_RESULTS.versionNumber < 12) || isIphone;
+const noIOSFullscreen =
+  (isSafari && BROWSER_RESULTS.versionNumber < 12) || isIphone;
 
-const SettingsDropdownContainer = props => (
-  <SettingsDropdown {...props} />
-);
+const SettingsDropdownContainer = (props) => <SettingsDropdown {...props} />;
 
 export default withTracker((props) => {
   const handleToggleFullscreen = () => FullscreenService.toggleFullScreen();
   return {
     amIModerator: props.amIModerator,
+    userName: props.userName,
     handleToggleFullscreen,
     noIOSFullscreen,
     isMeteorConnected: Meteor.status().connected,
